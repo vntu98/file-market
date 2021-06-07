@@ -12,12 +12,12 @@
             <span></span>
         </span>
 
-        <div style="display: flex; justify-content: space-between; align-items: center;" class="nav-right nav-menu">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;" class="nav-right nav-menu">
             @if (auth()->check())
                 <a style="margin-right: 15px" href="#" class="nav-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     Sign out
                 </a>
-                <a href="#" class="nav-item">
+                <a href="{{ route('account') }}" class="nav-item">
                     Your account
                 </a>
             @else

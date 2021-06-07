@@ -17,4 +17,13 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('home', 'HomeController@index')->name('home');
+
+Route::group(['prefix' => 'account', 'middleware' => ['auth'], 'namespace' => 'Account'], function () {
+    Route::get('', 'AccountController@index')->name('account');
+
+    Route::prefix('files')->group(function () {
+        Route::get('create', 'FileController@create')->name('account.files.create.start');
+        Route::get('{file}/create', 'FileController@create')->name('account.files.create');
+    });
+});
