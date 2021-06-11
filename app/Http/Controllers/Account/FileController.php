@@ -6,6 +6,7 @@ use App\File;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\File\StoreFileRequest;
+use App\Http\Requests\File\UpdateFileRequest;
 
 class FileController extends Controller
 {
@@ -14,6 +15,13 @@ class FileController extends Controller
         $files = auth()->user()->files()->latest()->finished()->get();
 
         return view('account.files.index', compact('files'));
+    }
+
+    public function edit(File $file)
+    {
+        $this->authorize('touch', $file);
+        
+        return view('account.files.edit', compact('file'));
     }
 
     public function create(File $file)
@@ -29,6 +37,22 @@ class FileController extends Controller
         return view('account.files.create', compact('file'));
     }
 
+    public function update(UpdateFileRequest $request, File $file)
+    {
+        $this->authorize('touch', $file);
+
+        if ($file->needsApproval($request->only(File::APPROVAL_PROPERTIES))) {
+            return;
+        }
+
+        $file->update([
+            'live' => $request->get('live', false) !== "false" ? true : false,
+            'price' => $request->price
+        ]);
+
+        return back()->withSuccess('File updated!');
+    }
+
     public function store(StoreFileRequest $request)
     {
         $file = File::query()->where('identifier', $request->file)->firstOrFail();
@@ -38,7 +62,8 @@ class FileController extends Controller
         $file->finished = true;
         $file->save();
 
-        return redirect()->route('account');
+        return redirect()->route('account.files.index')
+            ->withSuccess('Thanks, submitted for review');
     }
 
     protected function createAndReturnSkeletonFile()

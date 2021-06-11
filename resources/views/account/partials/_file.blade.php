@@ -1,13 +1,5 @@
-<article class="media">
-    <div class="media-content">
-        <div class="content">
-            <p>
-                <strong>
-                    <a href="">{{ $file->title }}</a>
-                </strong><br>
-                {{ $file->overview_short }}
-            </p>
-        </div>
+@component('files.partials._file', compact('file'))
+    @slot('links')
         <div class="level">
             <div class="level-left">
                 <p class="level-item">
@@ -21,8 +13,8 @@
                     <p class="level-item">
                         {{  $file->live ? 'Live' : 'Not live' }}
                     </p>
-                    <a href="" class="level-item">Make changes</a>
+                    <a href="{{ route('account.files.edit', $file) }}" class="level-item">Make changes</a>
             </div>
         </div>
-    </div>
-</article>
+    @endslot
+@endcomponent
