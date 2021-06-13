@@ -2,6 +2,23 @@
 
 @section('account.content')
     <h1 class="title">Make changes to {{ $file->title }}</h1>
+
+    <form action="{{ route('upload.store', ['file' => $file]) }}" method="POST" id="formUpload" class="form" enctype="multipart/form-data">
+        @csrf
+
+        <input type="file" name="file" multiple>
+
+        <div style="margin-top: 10px; margin-bottom: 20px" class="field is-grouped">
+            <p class="control">
+                <button id="upload" class="button is-primary">Upload</button>
+            </p>
+        </div>
+    </form>
+    
+    @if ($approval)
+        @include('account.files.partials._changes', compact('approval', 'file'))
+    @endif
+
     <form action="{{ route('account.files.update', ['file' => $file]) }}" method="post" class="form">
         @csrf
 
@@ -63,4 +80,8 @@
             <p>Your file changes may be subject to review</p>
         </div>
     </form>
+@endsection
+
+@section('scripts')
+    @include('account.files.partials._file_upload_js', compact('file'))
 @endsection

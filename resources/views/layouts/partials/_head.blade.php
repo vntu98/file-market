@@ -15,3 +15,5 @@
 
 <!-- Styles -->
 <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+<link rel="stylesheet" href="{{ asset('js/dropzone-5.7.0/dist/dropzone.css') }}">

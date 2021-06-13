@@ -2,13 +2,14 @@
 
 namespace App;
 
+use App\Traits\HasApprovals;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class File extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasApprovals;
 
     const APPROVAL_PROPERTIES = [
         'title',
@@ -51,9 +52,18 @@ class File extends Model
         return $this->hasMany(FileApproval::class);
     }
 
+    public function uploads()
+    {
+        return $this->hasMany(Upload::class);
+    }
+
     public function needsApproval(array $approvalProperties)
     {
         if ($this->currentPropertiesDifferToGiven($approvalProperties)) {
+            return true;
+        }
+
+        if ($this->uploads->unapproved()->count()) {
             return true;
         }
 
@@ -63,6 +73,11 @@ class File extends Model
     protected function currentPropertiesDifferToGiven(array $properties)
     {
         return array_only($this->toArray(), self::APPROVAL_PROPERTIES) != $properties;
+    }
+
+    public function createApproval(array $approvalProperties)
+    {
+        $this->approvals()->create($approvalProperties);
     }
 
     public function user()

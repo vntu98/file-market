@@ -2,8 +2,21 @@
 
 @section('account.content')
     <h1 class="title">Sell a file</h1>
-    <form action="{{ route('account.files.store', ['file' => $file]) }}" method="POST" class="form">
+    <form action="{{ route('upload.store', ['file' => $file]) }}" method="POST" id="formUpload" class="form" enctype="multipart/form-data">
         @csrf
+
+        <input type="file" name="file" multiple>
+
+        <div style="margin-top: 10px; margin-bottom: 20px" class="field is-grouped">
+            <p class="control">
+                <button id="upload" class="button is-primary">Upload</button>
+            </p>
+        </div>
+    </form>
+    <form action="{{ route('account.files.store', ['file' => $file]) }}" method="POST" class="form" enctype="multipart/form-data">
+        @csrf
+
+        <input type="hidden" name="uploads" value="{{ $file->id }}">
 
         <div class="field">
             <label for="title" class="label">Title</label>
@@ -52,4 +65,8 @@
             <p>We'll review your file before it goes file</p>
         </div>
     </form>
+@endsection
+
+@section('scripts')
+    @include('account.files.partials._file_upload_js', compact('file'))
 @endsection
