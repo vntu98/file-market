@@ -37,6 +37,42 @@ class File extends Model
         return 'identifier';
     }
 
+    public function approve()
+    {
+        $this->approveAllUploads();
+        $this->updateToBeVisible();
+    }
+
+    public function approveAllUploads()
+    {
+        $this->uploads()->update([
+            'approved' => true
+        ]);
+    }
+
+    public function updateToBeVisible()
+    {
+        $this->update([
+            'live' => true,
+            'approved' => true
+        ]);
+    }
+
+    public function mergeApprovalProperties()
+    {
+        $this->update(array_only($this->approvals->first()->toArray(), self::APPROVAL_PROPERTIES));
+    }
+
+    public function deleteAllApprovals()
+    {
+        $this->approvals()->delete();
+    }
+
+    public function deleteUnapprovedUploads()
+    {
+        $this->uploads()->unapproved()->delete();
+    }
+
     public function scopeFinished(Builder $query)
     {
         return $query->where('finished', true);

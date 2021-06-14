@@ -17,9 +17,16 @@
                 <a style="margin-right: 15px" href="#" class="nav-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     Sign out
                 </a>
+
                 <a href="{{ route('account') }}" class="nav-item">
                     Your account
                 </a>
+
+                @if (auth()->user()->hasRole('admin'))
+                    <a style="margin-left: 15px" href="{{ route('admin.index') }}" class="nav-item">
+                        Admin
+                    </a>
+                @endif
             @else
                 <a style="margin-right: 15px" href="{{ route('login') }}" class="nav-item">
                     Sign in
