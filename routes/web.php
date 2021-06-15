@@ -34,6 +34,7 @@ Route::group(['prefix' => 'account', 'middleware' => ['auth'], 'namespace' => 'A
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'namespace' => 'Admin'], function () {
     Route::get('', 'AdminController@index')->name('admin.index');
+    Route::get('{file}', 'FileController@show')->name('admin.files.show');
 
     Route::prefix('files')->group(function () {
         Route::prefix('new')->group(function () {
@@ -52,3 +53,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'namespace
 
 Route::post('{file}/upload', 'Upload\UploadController@store')->name('upload.store');
 Route::delete('{file}/upload/{upload}', 'Upload\UploadController@destroy')->name('upload.destroy');
+
+Route::get('{file}', 'Files\FileController@show')->name('files.show');

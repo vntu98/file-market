@@ -37,6 +37,24 @@ class File extends Model
         return 'identifier';
     }
 
+    public function visible()
+    {
+        if ($this->user->isAdmin()) {
+            return true;
+        }
+
+        if (auth()->user()->isTheSameAs($this->user->id)) {
+            return true;
+        }
+
+        return $this->live && $this->approved;
+    }
+
+    public function isTheSameAs(User $user)
+    {
+        return $this->id === $user->id;
+    }
+
     public function approve()
     {
         $this->approveAllUploads();
