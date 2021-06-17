@@ -37,6 +37,16 @@ class File extends Model
         return 'identifier';
     }
 
+    public function matchesSale(Sale $sale)
+    {
+        return $this->sales->contains($sale);
+    }
+
+    public function getUploadList()
+    {
+        return $this->uploads()->approved()->get()->pluck('path')->toArray();
+    }
+
     public function visible()
     {
         if ($this->user->isAdmin()) {
@@ -98,7 +108,7 @@ class File extends Model
 
     public function isFree()
     {
-        return $this->price === 0;
+        return $this->price == 0;
     }
 
     public function approvals()
@@ -134,8 +144,18 @@ class File extends Model
         $this->approvals()->create($approvalProperties);
     }
 
+    public function calculateCommission()
+    {
+        return (config('filemarket.sales.commission') / 100) * $this->price;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function sales()
+    {
+        return $this->hasMany(Sale::class);
     }
 }
